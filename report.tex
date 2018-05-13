@@ -1,0 +1,241 @@
+\documentclass[]{article}
+
+%opening
+\title{SVD}
+\author{}
+\usepackage{amsmath}
+\usepackage{float}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+\section{Eigenvalue Decomposition}
+Suppose there is $m\times m$ full rank symmetric matrix A,  it has m different eigenvalue,  and the eigenvalue is $\lambda_{i}$,  and the corresponding uint eigenvector is $x_{i}$,  then 
+\begin{equation}
+ \begin{split}
+    Ax_{1}=\lambda_{1}x_{1}\\
+    Ax_{2}=\lambda_{2}x_{2}\\
+    \cdots\\
+    Ax_{m}=\lambda_{m}x_{m}
+   \end{split}
+\end{equation}
+then :
+\begin{equation}
+   AU=U\Lambda
+\end{equation}
+\begin{equation}
+  U=[x_{1}\quad x_{2} \cdots x_{m}]
+\end{equation}
+\begin{equation}
+ \Lambda=\left[
+ \begin{matrix}
+  \lambda_{1}& \cdots & 0\\
+  \vdots & \ddots & \vdots \\
+  0&\cdots&\lambda_{m}  
+ \end{matrix}\right]
+\end{equation}
+Since the symmetric matrix eigenvectors are orthogonal to each other, U is a orthogonal matrix, and the inverse matrix of the orthogonal matrix is eaqual to its transpose.
+\begin{equation}
+ A=U\Lambda U^{-1}=U \Lambda U^{T}
+\end{equation}
+\section{Singular Value Decomposition}
+Suppose there is  $m\times n $ matrix A,  the aim is to find a group of orthogonal basis in n-dimensional space which is also orthogonal after A-transforms.  If the orthogonal basis $v$ is the eigenvector of the matrix $A^{T}A$,  then the elements in $v$ are orthogonal to each other because the matrix $A^{T}A$ is symmetric matrix.
+
+\begin{equation}
+\begin{split}
+{v_{i}}^{T}A^{T}Av_{j}&={v_{i}}^{T}\lambda_{j}v_{j}\\
+&=\lambda_{j}{v_{i}}^{T}v_{j}\\
+&=\lambda_{j}v_{i}v_{j}=0
+\end{split}
+\end{equation} 
+Then normalize the orthogonal basis after mapping:\\
+Tips:
+$\left[\begin{matrix}
+a\\b
+\end{matrix}\right]\cdot \left[\begin{matrix}
+c\\d
+\end{matrix}\right]= [ac+bd]={\left[\begin{matrix}
+a\\b
+\end{matrix}\right]}^{T} \left[\begin{matrix}
+c\\d
+\end{matrix}\right]$ 
+\begin{equation}
+\begin{split}
+Av_{i}\cdot Av_{i}&=(Av_{i})^{T}Av_{i}\\
+&={v_{i}}^{T}A^{T}Av_{i}\\
+&=\lambda_{i}v_{i}\cdot v_{i}=\lambda_{i}
+\end{split}
+\end{equation}
+ $\Rightarrow$
+\begin{equation}
+  |Av_{i}|^{2}=\lambda_{i}\ge 0
+\end{equation}
+So the unit vector is:
+\begin{equation}
+  u_{i}=\frac{Av_{i}}{|Av_{i}|}=\frac{1}{\sqrt{\lambda_{i}}}Av_{i}
+\end{equation}
+$\Rightarrow$
+\begin{equation}
+Av_{i}=\sigma_{i}u_{i} 
+\end{equation}
+$\sigma_{i}$ is singular value,  and $\sigma_{i}=\sqrt{\lambda_{i}}, 0\le i\le k, k=Rank(A)$\\
+Now expand the orthogonal vector $\{u_{1},u_{2},\cdots,u_{k}\}$ to $\{u_{1},u_{2},\cdots,u_{m}\}$ as a group of orthogonal vector in m-dimensional space.  Meanwhile,  expand $\{ v_{1},v_{2},\cdots,v_{k}$ to $\{ v_{1},v_{2},\cdots,v_{n}$ as a group of orthogonal vector and $\{ v_{k+1},v_{k+2},\cdots,v_{n}$ in $Ax=0$ solution space,  when $i>k$, $\sigma_{i}=0$
+\begin{equation}
+\begin{split}
+A[v_{1}v_{2}\cdots v_{k}|v_{k+1}\cdots v_{n}]\\=
+[u_{1}u_{2}\cdots u_{k}|u_{k+1}\cdots u_{m}]
+\left[ \begin{matrix}
+   \begin{matrix}
+   \sigma_{1}&&\\
+   &\ddots&\\
+   &&\sigma{k}
+   \end{matrix}&0\\
+   0&0  
+\end{matrix}\right]\\
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+A=\left[ \begin{matrix}
+u_{1} \cdots u_{k}
+\end{matrix}\right]\left[ \begin{matrix}
+\sigma_{1}&&\\
+&\ddots&\\
+&&\sigma_{k}
+\end{matrix}\right]\left[\begin{matrix}
+ { v_{1}}^{T}\\
+ \vdots\\
+ {v_{k}}^{T}\\
+ {v_{k+1}}^{T}\\
+ \vdots\\
+ {v_{n}}^{T}
+\end{matrix}\right]
+\end{split}
+\end{equation}
+Use the multiplication of matrix:
+\begin{equation}
+   A=\left[\begin{matrix}
+     u_{1} \cdots u_{k}
+   \end{matrix}\right]
+   \left[ \begin{matrix}
+     \sigma_{1}&&\\
+     &\ddots&\\
+     &&\sigma_{k}
+   \end{matrix}\right]
+   \left[
+   \begin{matrix}
+   {v_{1}}^{T}\\
+   \vdots\\
+   {v_{k}}^{T}
+   \end{matrix}\right]+
+   \left[\begin{matrix}
+   u_{k+1} \cdots u_{m}
+   \end{matrix}\right]
+   \left[ \begin{matrix}
+   0
+   \end{matrix}\right]
+   \left[
+   \begin{matrix}
+   {v_{k+1}}^{T}\\
+   \vdots\\
+   {v_{n}}^{T}
+   \end{matrix}\right]   
+\end{equation}
+Then matrix A can be decomposed as:
+\begin{equation}
+ A=\left[ \begin{matrix}
+  u_{1} \cdots u_{k}
+ \end{matrix}\right]
+ \left[
+ \begin{matrix}
+ \sigma_{1}&&\\
+ &\ddots&\\
+ &&\sigma_{k}
+ \end{matrix}\right]
+ \left[
+ \begin{matrix}
+ {v_{1}}^{T}\\
+ \vdots\\
+ {v_{k}}^{T}
+ \end{matrix}\right]
+\end{equation}  
+\begin{equation}
+  X=\left[ \begin{matrix}
+  u_{1} \cdots u_{k}
+  \end{matrix}\right]
+  \left[
+  \begin{matrix}
+  \sigma_{1}&&\\
+  &\ddots&\\
+  &&\sigma_{k}
+  \end{matrix}\right]=\left[
+  \begin{matrix}
+  \sigma_{1}u_{1}\cdots \sigma_{k}u_{k}
+  \end{matrix}\right]
+\end{equation}
+\begin{equation}
+Y=\left[
+\begin{matrix}
+{v_{1}}^{T}\\
+\vdots\\
+{v_{k}}^{T}
+\end{matrix}\right]
+\end{equation}
+Then $A=XY$ is the full rank decomposition of matrix A.
+\section{SVD in Recommender System}
+The data matrix of $user\quad and\quad item$ is huge.  And there are many blanks in this matrix,  so it is also an extrmely sparse matrix.  We defined this scoring matrix as $R_{U\times I}$
+\begin{table}[H]
+	\label{user/item matrix}
+	\caption{user/item matrix}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline 
+		user/item&1&2&3&4&$\cdots$ \\ \hline
+		1&5&4&4.5&?&$\cdots$ \\ \hline
+		2&?&4.5&?&4.5&$\cdots$\\ \hline
+		3&4.5&?&4.4&4&$\cdots$\\ \hline
+		$\cdots$&$\cdots$&$\cdots$&$\cdots$&$\cdots$ &$\cdots$ \\ \hline
+	\end{tabular}
+\end{table} 
+The scoring matrix $R_{U\times I}$ can be decompesed as two matrices$P$ and $Q$:
+\begin{equation}
+   R_{U \times I}=P_{U\times k}Q_{k\times I}
+\end{equation}
+$U$ is the number of users,  $I$ is the number of items,  $k$ is the rank of matrix $R$.\\
+Assuming that the known score is $r_{ui}$,  the error between the true value and the predicted value is:
+\begin{equation}
+ e_{ui}=r_{ui}-{\widehat{r}}_{ui}
+\end{equation} 
+The total error squared sum is:
+\begin{equation}
+   SSE=\sum_{u,i}{e_{ui}}^{2}=\sum_{u,i}(r_{ui}-\sum_{k=1}^{K}p_{uk}q_{ki})
+\end{equation}
+\subsection{Basic SVD with Gradient Descent}
+\begin{equation}
+\begin{split}
+   \frac{\partial }{\partial p_{uk}}SSE&=\frac{\partial}{\partial p_{uk}}\sum_{u,i}(e_{ui})^{2}\\
+    &=2e_{ui}\frac{\partial}{\partial p_{uk}}e_{ui}\\
+    &=2e_{ui}\frac{\partial}{\partial p_{uk}}(r_{ui}-\sum_{k=1}^{K}p_{uk}q_{ki})\\
+    &=2e_{ui}q_{ki}
+    \end{split}
+\end{equation}
+Explanation for the equation:\\
+ there is no summary symbol in the second step because only the equation which has $u$ has the derivative result,  other equations' derivative results are zero.
+ \begin{equation}
+   \begin{split}
+      p_{uk}:=p_{uk}-\eta(-e_{ui}q_{ki})=p_{uk}+\eta e_{ui}q_{ki}\\
+      q_{ki}:=q_{ki}-\eta(-e_{ui}p_{uk})=q_{ki}+\eta e_{ui}p_{uk}
+   \end{split}
+ \end{equation}
+There are two different ways to update the two arguments:
+\begin{itemize}
+	\item \textbf{Batch Gradient Descent Algorithm}\\
+	      Update $p$,$q$ after calculating all the predictions of known scores
+	\item \textbf{Random Gradient Descent Algorithm}\\
+	      Update $p$,$q$ after calculating one $e_{ui}$	
+\end{itemize}
+We choose random gradient descent algorithm because we have to minimize the equation $SSE$,  so we have to search in the direction of negative gradient, this may cause the gradient descent stop in the local optimal solution if we use bath gradient descent algorithm. 
+\end{document}
