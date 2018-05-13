@@ -2,40 +2,29 @@ from collections import OrderedDict
 import os
 import codecs
 import glob
-import numpy
+import numpy as np
+import re
 
 
 # read file
+all_information = np.zeros((5, 944, 1683))
 os.getcwd()
-os.chdir("/home/mint/PycharmProjects/Differential_Privacy/download/training_set")
+os.chdir("/media/mint/mint/Differential_Privacy/data/train")
 '''
 movie is the dictionary of the all the movie information
 the format is :
 {movie_id : [ [customer_id, ranking, date]]} 
 '''
-movie = OrderedDict()
+pattern = re.compile(r'\d+') #find numbers
 files = glob.glob('*.txt')
 file_list = codecs.open('all.txt', 'a')
+index = 0
 for filename in files:
     f = codecs.open(filename, 'r', encoding='utf-8')
-    index = 0
     for line in f:
-        if index == 0:
-            movie_id = line.split(':')[0]
-            movie_dict = []
-            index += 1
-        elif index > 0:
-            information = []
-            customer_id = line.split(',')[0]
-            information.append(customer_id)
-            ranking = int(line.split(',')[1])
-            information.append(ranking)
-            date = line.split(',')[2]
-            information.append(date[0:10])
-            movie_dict.append(information)
-            index += 1
-    movie[movie_id] = movie_dict
-
-print(movie)
+            information = pattern.findall(line)
+            all_information[index][int(information[0])][int(information[1])]=int(information[2])
+    index += 1
+print(all_information)
 
 
