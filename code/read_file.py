@@ -10,7 +10,7 @@ import re
 def read_files():
     all_information = np.zeros((5, 944, 1683))
     os.getcwd()
-    os.chdir("/media/mint/mint/Differential_Privacy/data/train")
+    os.chdir("/Users/audrey/Documents/GitHub/Differential-Privacy/data/train")
     '''
     movie is the dictionary of the all the movie information
     the format is :
@@ -18,7 +18,7 @@ def read_files():
     '''
     pattern = re.compile(r'\d+') #find numbers
     files = glob.glob('*.txt')
-    file_list = codecs.open('all.txt', 'a')
+
     index = 0
     for filename in files:
         f = codecs.open(filename, 'r', encoding='utf-8')
@@ -27,4 +27,4 @@ def read_files():
                 all_information[index][int(information[0])][int(information[1])]=int(information[2])
         index += 1
 
-
+    return all_information
