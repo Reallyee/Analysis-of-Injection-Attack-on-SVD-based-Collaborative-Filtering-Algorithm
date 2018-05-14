@@ -29,6 +29,13 @@ def getUAvg(df,MAvg):
     UAvg = USum/(c_u + beta)
     return UAvg
 
+def clamp(df,UAvg,bound):
+    #lower the sensitivity of the measurements
+    df_hat = (df.transpose()-UAvg).transpose()
+    df_hat[ df_hat < -bound ] = -bound
+    df_hat[ df_hat > bound ] = bound
+    return df_hat
+
 
 '''
 Demo for how to use it:
@@ -37,5 +44,6 @@ Demo for how to use it:
 2. df = dfs[0]
    MAvg = getMAvg(df)
    UAvg = getUAvg(df,MAvg)
+3. cdf = clamp(df,UAvg,0.09)
 
 '''
