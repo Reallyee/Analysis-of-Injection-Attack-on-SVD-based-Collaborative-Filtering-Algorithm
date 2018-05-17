@@ -5,6 +5,40 @@
 \author{}
 \usepackage{amsmath}
 \usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\definecolor{mygreen}{rgb}{0,0.6,0}  
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}  
+\definecolor{mymauve}{rgb}{0.58,0,0.82}  
+
+\lstset{ %  
+	backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}  
+	basicstyle=\footnotesize,        % the size of the fonts that are used for the code  
+	breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace  
+	breaklines=true,                 % sets automatic line breaking  
+	captionpos=bl,                    % sets the caption-position to bottom  
+	commentstyle=\color{mygreen},    % comment style  
+	deletekeywords={...},            % if you want to delete keywords from the given language  
+	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code  
+	extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8  
+	frame=single,                    % adds a frame around the code  
+	keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)  
+	keywordstyle=\color{blue},       % keyword style  
+	%language=Python,                 % the language of the code  
+	morekeywords={*,...},            % if you want to add more keywords to the set  
+	numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)  
+	numbersep=5pt,                   % how far the line-numbers are from the code  
+	numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers  
+	rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))  
+	showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'  
+	showstringspaces=false,          % underline spaces within strings only  
+	showtabs=false,                  % show tabs within strings adding particular underscores  
+	stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered  
+	stringstyle=\color{orange},     % string literal style  
+	tabsize=2,                       % sets default tabsize to 2 spaces  
+	%title=myPython.py                   % show the filename of files included with \lstinputlisting; also try caption instead of title  
+}  
 \begin{document}
 
 \maketitle
@@ -238,4 +272,145 @@ There are two different ways to update the two arguments:
 	      Update $p$,$q$ after calculating one $e_{ui}$	
 \end{itemize}
 We choose random gradient descent algorithm because we have to minimize the equation $SSE$,  so we have to search in the direction of negative gradient, this may cause the gradient descent stop in the local optimal solution if we use bath gradient descent algorithm. 
+\subsection{Adding Biases}
+The equation 17 complains the interactions between users and items that produce the different rating values. However, much of the ovserved variation in rating values is due to effects associated with either users or items, known as biases or intercepts.
+
+A first-order approximation of the bias involved in ranting $r_{ui}$ is as follows:
+\begin{equation}
+b_{ui}=\mu+b_i+b_u
+\end{equation}
+$b_{ui}$ is the estimation of the rank the user may gives. $\mu$ is the mean of all the item ranks, $b_u$ is the user's mean rank and $b_i$ is the mean rank that the item gets.
+\begin{equation}
+\hat{r_{ui}}=\mu +b_i+b_u+{q_i}^Tp_{u}
+\end{equation}
+\subsection{Gradient Descent with Biases}
+As users ratings of the merchandise not only depends on a relationship between users and products, but also depends on the unique properties of the users and products.
+\begin{equation}
+\begin{split}
+SSE&=\frac{1}{2}(\sum_{u,i}{e_{ui}}^2+\lambda \sum_{u}|p_u|+\lambda \sum_{i}|q_i|+\lambda \sum_u {b_u}^2+\lambda \sum_u{b_i}^2)\\
+	&=\frac{1}{2}\sum_{u,i}(r_{ui}-\mu-b_u-b_i-\sum_{k=1}^{K}p_{uk}q_{ki})^2+\frac{1}{2}(\lambda \sum_{u}|p_u|+\lambda \sum_{i}|q_i|+\lambda \sum_u {b_u}^2+\lambda \sum_u{b_i}^2)
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+\frac{\partial }{\partial b_{u}}SSE&=-e_{ui}+\lambda b_u \\
+\frac{\partial }{\partial b_{i}}SSE&=-e_{ui}+\lambda b_i 
+\end{split}
+\end{equation}
+Then implies the equation to update $b_u$ and $b_i$:
+\begin{equation}
+\begin{split}
+b_u := b_u +\eta(e_{ui}-\lambda b_u)\\
+b_i := b_i +\eta(e_{ui}-\lambda b_i)
+\end{split}
+\end{equation}
+
+
+The details of the algorithm is as follows:\\
+
+
+Firstly, generate two random value matrix p and q, then use gradient descent to minimize the error and update $b_i$, $b_u$, p, and the mean-square error Rmse.\\
+
+
+If Rmse increase, it means that the result just strides the local optimal point. So the train process has been finished.\\
+
+
+The return result is the matrix p and q.\\
+
+
+\textbf{The explaination of some variables:} 
+\begin{itemize}
+	
+	\item iteration\_times: the iteration times that gradient descent runs
+	\item $b_u$: mean rank of a user gives
+	\item $b_i$: mean rank that a product gets
+	\item e: error
+	\item eta: gradient descent step length, when the result is close local optimal result, we should decrease the step length 
+	\item l: regularization parameter
+\end{itemize}
+
+
+\begin{lstlisting}[language=Python,title={RSVD}]  
+Rmse = 0
+mLastRmse = 100000
+rui = 0
+for iteration in range(0, iteration_times):
+	Rmse = 0
+	nRateNum = 0
+	for user in range(0, bu.shape[1]):
+		for item in range(0, bi.shape[1]):
+			if rank_information[user][item] != 0:
+				rui = mean+bu[user]+bi[item]+InnerProduct(p[user],q[item])
+				if rui>MaxRank:
+					rui = MaxRank
+				if rui<MinRank:
+					rui = MinRank
+				e = rank_information[user][item]-rui
+				
+				\\update bu,bi,p,q
+				bu[user] += eta*(e-l*bu[user])
+				bi[item] += eta*(e-l*bi[item])
+				for rank in range(0, matrix_rank):
+					p[user][rank] += eta*(e*q[rank][item]-l*p[user][rank])
+					q[rank][item] += eta*(e*p[user][rank]-l*q[rank][item])
+				Rmse += e*e
+				nRateNum++
+		Rmse = sqrt(Rmse/nRateNum)
+		if(Rmse>mLastRmse)
+			break
+		mLastRmse = Rmse
+		eta *= 0.9			
+\end{lstlisting} 
+\section{Experiment}
+\subsection{Dataset}
+\textbf{MovieLens 100K Dataset}\\
+Stable benchmark dataset. 100,000 ratings from 1000 users on 1700 movies. Released 4/1998.
+\subsection{Result}
+\begin{equation}
+\begin{split}
+Rmse = \frac{1}{n}\sum(tain\_\hat{r_{ui}}-train\_r_{ui})^2\\
+mse = \frac{1}{n}\sum(tain\_\hat{r_{ui}}-test\_r_{ui})^2\\
+sse = \sum(tain\_\hat{r_{ui}}-test\_r_{ui})^2 
+\end{split}
+\end{equation}
+\textbf{matrix\_rank= 600, eta = 0.1, lambda = 0.01}
+\begin{table}[H]
+	\centering
+	\caption{recommendation result without noise}
+	\begin{tabular}{|c|c|c|c|}
+		\hline 
+		iteration & Rmse&mse&sse  \\ \hline
+		0 & 0.9818 & 3.0087 & 905250.0317 \\ \hline
+		1 & 0.9566 & 0.8326 & 69317.6155 \\ \hline
+		2 & 0.9510 & 0.8395 & 70469.0158 \\ \hline
+		3 & 0.9471 & 0.8478 & 71874.9919 \\ \hline
+		4 & 0.9436 & 0.8553 & 73152.9617 \\ \hline
+		5 & 0.9404 & 0.8620 & 74312.8893 \\ \hline
+		6 & 0.9376 & 0.8681 & 75364.0547 \\ \hline
+		7 & 0.9351 & 0.8736 & 76314.9248 \\ \hline
+		8 & 0.9328 & 0.8785 & 77173.8627 \\ \hline
+		9 & 0.9308 & 0.8829 & 77948.5383 \\ \hline
+	\end{tabular}
+\end{table}
+Add Laplace noise $d\sim (0, 1)$ to the original data:
+ \begin{table}[H]
+ 	\centering
+ 	\caption{recommendation result without noise}
+ 	\begin{tabular}{|c|c|c|c|}
+ 		\hline 
+ 		iteration & Rmse&mse&sse  \\ \hline
+ 		0 & 0.9820 & 3.0120 & 907200.4728 \\ \hline
+ 		1 & 0.9567 & 0.8325 & 69309.9256 \\ \hline
+ 		2 & 0.9510 & 0.8397 & 70506.2410 \\ \hline
+ 		3 & 0.9471 & 0.8480 & 71911.5554 \\ \hline
+ 		4 & 0.9436 & 0.8555 & 73188.9633 \\ \hline
+ 		5 & 0.9405 & 0.8623 & 74348.5918 \\ \hline
+ 		6 & 0.9377 & 0.8683 & 75399.7170 \\ \hline
+ 		7 & 0.9351 & 0.8738 & 76350.8106 \\ \hline
+ 		8 & 0.9329 & 0.8787 & 77209.8048 \\ \hline
+ 		9 & 0.9308 & 0.8831 & 77984.3414 \\ \hline
+ 	\end{tabular}
+ \end{table}
+\subsubsection{Result Analysis}
+ As the iteration time increase, Rmse is dereasing, which means the SVD model is more close to the trainning dataset. However, mse and sse are increasing, which means the SVD model may become overfit apparently. According to the results above, the results of data without noise and data with noise are similar. However, as for recommendation system, there is no need to care about the accurency of the predicted value. The key of the prediction model is the predicted item sets. 
 \end{document}
