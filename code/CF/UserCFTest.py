@@ -88,11 +88,16 @@ def Recommend(u,train,user_sim):
 
 if __name__ == '__main__':
     t1 = time.time()
+
+
+
     dfs = read_files()
     train = dfs[0]
     user_sim = UserSimilarity(train)
-    for u in range(np.shape(train)[0]):
-	    rec = Recommend(u,train,user_sim)
-	    print("rec for User ",u,' ',rec)
+
+    print(type(Recommend(2,train,user_sim)))
+    # for u in range(np.shape(train)[0]):
+	 #    rec = Recommend(u,train,user_sim)
+	 #    print("rec for User ",u,' ',rec)
 
     print('Elapsed time ', time.time()-t1, 's')
