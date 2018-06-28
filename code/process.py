@@ -6,6 +6,7 @@ import numpy as np
 import re
 import copy as cp
 import queue 
+import random
 
 
 # read file
@@ -71,10 +72,9 @@ def read_files():
 	return all_information, mean, bi, bu, test_information
 
 
-def train(matrix_rank, eta, mu, iteration_time):
+def train(matrix_rank, eta, mu, iteration_time,information, mean, bi, bu, test_information):
 	MaxRate = 5
 	MinRate = 1
-	information, mean, bi, bu, test_information = read_files()
 #     the range of the rank is [1,5]
 	p = np.random.rand(bi.shape[1], matrix_rank)
 	q = np.random.rand(matrix_rank, bi.shape[1])
@@ -127,13 +127,12 @@ def train(matrix_rank, eta, mu, iteration_time):
 	
 
 
-def train_with_noise(matrix_rank, eta, mu, iteration_time):
+def train_with_noise(matrix_rank, eta, mu, iteration_time,laplace_scale,information, mean, bi, bu, test_information):
 	MaxRate = 5
 	MinRate = 1
 	train_number = 0
-	information, mean, bi, bu, test_information = read_files()
 	noisy_information = cp.deepcopy(information)
-	noisy_information[train_number] = information[train_number] + np.random.laplace(scale=0.1)
+	noisy_information[train_number] = information[train_number] + np.random.laplace(scale=laplace_scale)
 #     the range of the rank is [1,5]
 	p = np.random.rand(bi.shape[1], matrix_rank)
 	q = np.random.rand(matrix_rank, bi.shape[1])
@@ -244,13 +243,9 @@ def test_train(new_information, test_information):
 								min_predict = new_information[train_number][top_n_predict[elem][0]][top_n_predict[elem][1]]
 								min_user_predict = top_n_predict[elem][0]
 								min_item_predict = top_n_predict[elem][1]
-		print("--------------predition----------------")
-		print(top_n_predict)
-		for elem in top_n_real:
-			print(new_information[train_number][0][1])
-		print(top_n_real)
-		for elem in top_n_real:
-			print(test_information[train_number][0][1])
+		# print("--------------predition----------------")
+		# print(top_n_predict)	
+		# print(top_n_real)
 		for elem in top_n_predict:
 			if elem in top_n_real:
 				predict_number += 1
@@ -258,17 +253,88 @@ def test_train(new_information, test_information):
 	return predict_number, amount
 
 
+def average_attack(new_information):
+    train_number = 0
+    laplace_scale = 0
+    user_number = 934
+    movie_number = 1682
+    movies = np.random.randint(movie_number, size=5)
+    users = np.random.randint(user_number, size=100)
+    for user in users:
+        for movie in movies:
+            new_information[train_number][user][movie] = 5
+        other_movies = []
+        for amount in range(0,5):
+            other_movie = np.random.randint(1682,size=1)
+            if (other_movie not in movies) and (other_movie not in other_movies):
+                other_movies.append(other_movie)
+        for movie in other_movies:
+            summary = 0
+            for u in range(0, user_number):
+                if u != user:
+                    summary += new_information[train_number][u][movie]
+            summary /= (user_number-1)
+            new_information[train_number][user][movie] = summary
+    return new_information
 
 
+def random_attack(new_information):
+    train_number = 0
+    laplace_scale = 0
+    user_number = 934
+    movie_number = 1682
+    movies = np.random.randint(movie_number, size=5)
+    users = np.random.randint(user_number, size=100)
+    for user in users:
+        for movie in movies:
+            new_information[train_number][user][movie] = 5
+        other_movies = []
+        for amount in range(0, 5):
+            other_movie = np.random.randint(1682, size=1)
+            if (other_movie not in movies) and (other_movie not in other_movies):
+                other_movies.append(other_movie)
+                new_information[train_number][user][movie] = random.random()*5
+    return new_information
 
 
+def nuke_attack(new_information):
+    train_number = 0
+    user_number = 934
+    movie_number = 1682
+    movies = np.random.randint(movie_number, size=5)
+    users = np.random.randint(user_number, size=100)
+    for user in users:
+        for movie in movies:
+            new_information[train_number][user][movie] = 5
+    return new_information
 
 
-print("----------------train orginal data----------------------")
-train(600, 0.1, 0.01, 10)
-print("----------------train data with noise-------------------")
-train_with_noise(600, 0.1, 0.01, 10)
-
+if __name__=="__main__":
+	information, mean, bi, bu, test_information = read_files()
+	print("----------------train orginal data and average attack-------------------------")
+	# # new_information = average_attack(information)
+	# # train(300, 0.1, 0.01, 1,new_information, mean, bi, bu, test_information)
+	# train(300, 0.1, 0.01, 10,information, mean, bi, bu, test_information)
+	
+	for i in range(1, 7):
+		# print("----------------train data with noise and average attack with laplace_scale=",i,"-------------------")
+		print("----------------train data with noise and laplace_scale=",i,"-------------------")
+		# new_information =  average_attack(information)
+		train_with_noise(300, 0.1, 0.01, 1, i,information, mean, bi, bu, test_information)
+	# print("----------------train orginal data and random attack-------------------------")
+	# new_information = random_attack(information)
+	# train(300, 0.1, 0.01, 1,new_information, mean, bi, bu, test_information)
+	# for i in range(1, 7):
+	# 	print("----------------train data with noise and random attack with laplace_scale=",i,"-------------------")
+	# 	new_information =  random_attack(information)
+	# 	train_with_noise(300, 0.1, 0.01, 1, i,new_information, mean, bi, bu, test_information)
+	# print("----------------train orginal data and nuke attack-------------------------")
+	# new_information = nuke_attack(information)
+	# train(300, 0.1, 0.01, 1,new_information, mean, bi, bu, test_information)
+	# for i in range(1, 7):
+	# 	print("----------------train data with noise and nuke attack with laplace_scale=",i,"-------------------")
+	# 	new_information =  nuke_attack(information)
+	# 	train_with_noise(300, 0.1, 0.01, 1, i,new_information, mean, bi, bu, test_information)
         
         
 

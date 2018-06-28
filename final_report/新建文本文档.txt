@@ -1,0 +1,44 @@
+----------------train orginal data and average attack-------------------------
+predict accuracy is : 0.2928950159066808
+----------------train data with noise and average attack with laplace_scale= 1 -------------------
+predict accuracy is : 0.1826086956521739
+----------------train data with noise and average attack with laplace_scale= 2 -------------------
+predict accuracy is : 0.24878048780487805
+----------------train data with noise and average attack with laplace_scale= 3 -------------------
+process.py:176: RuntimeWarning: overflow encountered in double_scalars
+  error += e*e
+predict accuracy is : 0.2916224814422057
+----------------train data with noise and average attack with laplace_scale= 4 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and average attack with laplace_scale= 5 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and average attack with laplace_scale= 6 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train orginal data and random attack-------------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and random attack with laplace_scale= 1 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and random attack with laplace_scale= 2 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and random attack with laplace_scale= 3 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and random attack with laplace_scale= 4 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and random attack with laplace_scale= 5 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and random attack with laplace_scale= 6 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train orginal data and nuke attack-------------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and nuke attack with laplace_scale= 1 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and nuke attack with laplace_scale= 2 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and nuke attack with laplace_scale= 3 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and nuke attack with laplace_scale= 4 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and nuke attack with laplace_scale= 5 -------------------
+predict accuracy is : 0.3147401908801697
+----------------train data with noise and nuke attack with laplace_scale= 6 -------------------
+predict accuracy is : 0.3147401908801697

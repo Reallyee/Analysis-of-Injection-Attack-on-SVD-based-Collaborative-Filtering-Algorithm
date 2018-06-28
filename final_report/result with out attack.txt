@@ -1,0 +1,13 @@
+----------------train orginal data and average attack-------------------------
+----------------train data with noise and laplace_scale= 1 -------------------
+predict accuracy is : 0.26277836691410394
+----------------train data with noise and laplace_scale= 2 -------------------
+predict accuracy is : 0.3090137857900318
+----------------train data with noise and laplace_scale= 3 -------------------
+predict accuracy is : 0.2509013785790032
+----------------train data with noise and laplace_scale= 4 -------------------
+predict accuracy is : 0.03160127253446447
+----------------train data with noise and laplace_scale= 5 -------------------
+predict accuracy is : 0.29204665959703074
+----------------train data with noise and laplace_scale= 6 -------------------
+predict accuracy is : 0.2349946977730647
